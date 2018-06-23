@@ -28,8 +28,12 @@ def show_rooms(request):
 
     res = "<table border=1px>"
     for room in rooms:
-        res += """<tr><td><a href='/room/{}'>{}</a> <a href='room/modify/{}' style='color: red;'>
-                        <small>Edytuj</small></a></td></tr>""".format(room.id, room.name, room.id )
+        res += """<tr><td><a href='/room/{}'>{}</a> <a href='/room/modify/{}' style='color: red;'>
+                        <small>Edytuj</small></a><br>
+                        <a href='/room/delete/{}' style='color: black;'>Usuń</a></td></tr></form>""".format(room.id,
+                                                                                                            room.name,
+                                                                                                            room.id,
+                                                                                                            room.id)
     res += "</table><br>"
     res += """<a href='/room/new'>Dodaj salę</a>
               <a href='/search/'>Wyszukaj salę</a>"""

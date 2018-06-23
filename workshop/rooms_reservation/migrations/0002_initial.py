@@ -9,13 +9,13 @@ def populate(apps, schema_editor):
     Room.objects.create(name="Filetowa", capacity=30, projector=True)
     Room.objects.create(name="Żółta", capacity=23, projector=True)
     Room.objects.create(name="Czarna", capacity=10, projector=True)
-    Room.objects.create(name="Szara", capacity=52, projector=False)
+    Room.objects.create(name="Szara", capacity=52, projector=True)
     Room.objects.create(name="Zielona", capacity=17, projector=True)
     Room.objects.create(name="Czerwona", capacity=28, projector=True)
-    Room.objects.create(name="Biała", capacity=44, projector=False)
+    Room.objects.create(name="Biała", capacity=44, projector=True)
     Room.objects.create(name="Pomarańczowa", capacity=38, projector=True)
     Room.objects.create(name="Niebieska", capacity=7, projector=True)
-    Room.objects.create(name="Różowa", capacity=21, projector=False)
+    Room.objects.create(name="Różowa", capacity=21, projector=True)
 
 
 class Migration(migrations.Migration):

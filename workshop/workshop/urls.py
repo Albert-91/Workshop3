@@ -19,6 +19,7 @@ from django.urls import path, re_path
 from django.conf.urls import url
 from rooms_reservation.views import *
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     url('^room/new', add_room),

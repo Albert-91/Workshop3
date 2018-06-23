@@ -57,12 +57,15 @@ def details_room(request, id):
         answer += "<h3>Nie posiada rzutnika</h3><br>"
     answer += """
             </div>
-            <div>
-            Sala zarezerwowana na dni:
+            <div align="center">
             """
-    reserved = Reservation.objects.get(room_id=id)
-    for res in reserved:
-        answer += "<ul><li>{}</li></ul><br>".format(res.date)
+    try:
+        reserved = Reservation.objects.get(room_id=id)
+        answer += "Sala zarezerwowana na dni:<br>"
+        for res in reserved:
+            answer += "<ul><li>{}</li></ul><br>".format(res.date)
+    except Reservation.DoesNotExist:
+        answer += "Brak rezerwacji"
     answer += "</div>"
     return HttpResponse(answer)
 
@@ -71,7 +74,37 @@ def details_room(request, id):
 @csrf_exempt
 def edit_room(request, id):
     room = Room.objects.get(id=id)
-    pass
+    response = HttpResponse()
+    if request.method == 'GET':
+        form = """<html><body><form action='#' method='POST'>"""
+        form += """Zmień dane sali {}""".format(room.name)
+        form += """<label> Nazwa sali:<br>
+                               <input type='text' name='room_name'>
+                               </label><br><br>"""
+        form += """<label> Pojemność:<br>
+                               <input type='number' name='capacity'>
+                               </label><br><br>"""
+        form += """<label> Projektor:<br>
+                               <input type='checkbox' name='projector' value='projector'>
+                               </label><br><br>"""
+        form += "<input type='submit' value='wyślij'>"
+        form += "</form>"
+        response.write(form)
+    else:
+        name = request.POST.get('room_name')
+        capacity = request.POST.get('capacity')
+        projector = request.POST.get('projector')
+        if projector is not None:
+            projector = True
+        else:
+            projector = False
+        room.name = name
+        room.capacity = capacity
+        room.projector = projector
+        room.save()
+        response.write("Zmieniono dane sali {}".format(room.name))
+
+    return response
 
 @csrf_exempt
 def add_room(request):
@@ -114,9 +147,3 @@ def delete_room(request, id):
     room.delete()
     answer = "Sala {} usunięta".format(room.name)
     return HttpResponse(answer)
-
-
-
-
-def delete_room(request):
-    pass

@@ -7,8 +7,7 @@ from django.urls import reverse
 from django.views import View
 from django.utils.decorators import method_decorator
 from datetime import datetime, timedelta
-# from rooms_reservation.models import *
-# Create your views here.
+from rooms_reservation.models import *
 
 
 def decor_warp_html(form):

@@ -41,11 +41,31 @@ def show_rooms(request):
 def details_room(request, id):
     room = Room.objects.get(id=id)
 
+    answer = """
+            <div align="center">
+                    <h1>Nazwa sali: {}</h1><br>
+                    <h3>Pojemność: {}</h3><br>
+            """.format(room.name, room.capacity)
+    if room.projector:
+        answer += "<h3>Posiada rzutnik</h3><br>"
+    else:
+        answer += "<h3>Nie posiada rzutnika</h3><br>"
+    answer += """
+            </div>
+            <div>
+            Sala zarezerwowana na dni:
+            """
+    reserved = Reservation.objects.get(room_id=id)
+    for res in reserved:
+        answer += "<ul><li>{}</li></ul><br>".format(res.date)
+    answer += "</div>"
+    return HttpResponse(answer)
 
 
 
 @csrf_exempt
-def edit_room(request):
+def edit_room(request, id):
+    room = Room.objects.get(id=id)
     pass
 
 @csrf_exempt
@@ -57,8 +77,11 @@ def search_room(request):
     pass
 
 @csrf_exempt
-def delete_room(request):
-    pass
+def delete_room(request, id):
+    room = Room.objects.get(id=id)
+    room.delete()
+    answer = "Sala {} usunięta".format(room.name)
+    return HttpResponse(answer)
 
 
 

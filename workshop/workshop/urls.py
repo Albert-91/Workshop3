@@ -25,6 +25,6 @@ urlpatterns = [
     url('^room/modify/(?P<id>\d+)', edit_room),
     url('^room/delete/(?P<id>\d+)', delete_room),
     url('^room/(?P<id>\d+)', details_room),
-    url('^adres/', show_rooms ),
+    url('^adres/', show_rooms),
 ]
 

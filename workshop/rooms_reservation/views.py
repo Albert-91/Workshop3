@@ -11,15 +11,42 @@ from rooms_reservation.models import *
 # Create your views here.
 
 
+def decor_warp_html(form):
+    def warp_html(*args, **kwargs):
+        html = """
+            <html>
+                <body>
+                    <table border=1>
+                        {}
+                    </table>
+                </body>
+            </html>""".format(form(*args, **kwargs))
+        return HttpResponse(html)
+    return warp_html
+
 
 @csrf_exempt
+@decor_warp_html
 def show_rooms(request):
-    pass
+    rooms = Room.objects.all()
+
+    res = ""
+    for room in rooms:
+        res += """<tr><td><a href='/room/{}'>{}</a></td></tr>""".format(room.id, room.name)
+
+    return res
+
+
 
 
 @csrf_exempt
-def details_room(request):
-    pass
+def details_room(request, id):
+    room = Room.obects.get(id=id)
+
+
+
+
+
 
 @csrf_exempt
 def edit_room(request):
@@ -38,16 +65,5 @@ def delete_room(request):
     pass
 
 
-def decor_warp_html(form):
-    def warp_html(*args, **kwargs):
-        result = """
-            <html>
-                <body>
-                    <table border=1>
-                        {}
-                    </table>
-                </body>
-            </html>""".format(form(*args, **kwargs))
-        return HttpResponse(result)
-    return warp_html
+
 

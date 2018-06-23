@@ -4,6 +4,11 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
+from django.db import migrations, models
+import django.db.models.deletion
+from rooms_reservation.models import *
+
+
 class Migration(migrations.Migration):
 
     initial = True
@@ -34,4 +39,6 @@ class Migration(migrations.Migration):
             name='room_id',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rooms_reservation.Room'),
         ),
+
     ]
+

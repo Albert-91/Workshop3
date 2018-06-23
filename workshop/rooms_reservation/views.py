@@ -1,5 +1,3 @@
-from django.http import HttpResponse
-from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt

@@ -25,9 +25,6 @@ def decor_warp_html(form):
 @decor_warp_html
 def show_rooms(request):
     rooms = Room.objects.all()
-    res = ""
-    for room in rooms:
-        res += """<tr><td><a href='/room/{}'>{}</a></td></tr>""".format(room.id, room.name)
     res = "<table border=1px>"
     for room in rooms:
         res += """<tr><td><a href='/room/{}'>{}</a> <a href='/room/modify/{}' style='color: red;'>
@@ -88,7 +85,7 @@ def edit_room(request, id):
                                <input type='checkbox' name='projector' value='projector'>
                                </label><br><br>"""
         form += "<input type='submit' value='wyślij'>"
-        form += "</form>"
+        form += "</form></body><//html>"
         response.write(form)
     else:
         name = request.POST.get('room_name')
@@ -121,7 +118,7 @@ def add_room(request):
                            <input type='checkbox' name='projector' value='projector'>
                            </label><br><br>"""
         form += "<input type='submit' value='wyślij'>"
-        form += "</form>"
+        form += "</form></body></html>"
         response.write(form)
     else:
         name = request.POST.get('room_name')

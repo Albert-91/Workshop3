@@ -77,7 +77,7 @@ def edit_room(request, id):
     response = HttpResponse()
     if request.method == 'GET':
         form = """<html><body><form action='#' method='POST'>"""
-        form += """Zmień dane sali {}""".format(room.name)
+        form += """Zmień dane sali {} <br><br>""".format(room.name)
         form += """<label> Nazwa sali:<br>
                                <input type='text' name='room_name'>
                                </label><br><br>"""

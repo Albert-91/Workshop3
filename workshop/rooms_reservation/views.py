@@ -46,8 +46,6 @@ def details_room(request, id):
 
 
 
-
-
 @csrf_exempt
 def edit_room(request):
     pass

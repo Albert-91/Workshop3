@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, HttpResponseRedirect
@@ -35,3 +36,18 @@ def search_room(request):
 @csrf_exempt
 def delete_room(request):
     pass
+
+
+def decor_warp_html(form):
+    def warp_html(*args, **kwargs):
+        result = """
+            <html>
+                <body>
+                    <table border=1>
+                        {}
+                    </table>
+                </body>
+            </html>""".format(form(*args, **kwargs))
+        return HttpResponse(result)
+    return warp_html
+

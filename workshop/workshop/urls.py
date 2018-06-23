@@ -19,12 +19,14 @@ from django.urls import path, re_path
 from django.conf.urls import url
 from rooms_reservation.views import *
 
+from workshop.rooms_reservation.views import add_room, edit_room, delete_room, details_room, show_rooms
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     url('^room/new', add_room),
     url('^room/modify/(?P<id>\d+)', edit_room),
     url('^room/delete/(?P<id>\d+)', delete_room),
     url('^room/(?P<id>\d+)', details_room),
-    url('^adres/', show_rooms ),
+    url('^adres/', show_rooms),
 ]
 

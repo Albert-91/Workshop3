@@ -14,9 +14,7 @@ def decor_warp_html(form):
         html = """
             <html>
                 <body>
-                    <table border=1>
-                        {}
-                    </table>
+                    {}
                 </body>
             </html>""".format(form(*args, **kwargs))
         return HttpResponse(html)
@@ -28,10 +26,13 @@ def decor_warp_html(form):
 def show_rooms(request):
     rooms = Room.objects.all()
 
-    res = ""
+    res = "<table border=1px>"
     for room in rooms:
-        res += """<tr><td><a href='/room/{}'>{}</a></td></tr>""".format(room.id, room.name)
-
+        res += """<tr><td><a href='/room/{}'>{}</a> <a href='room/modify/{}' style='color: red;'>
+                        <small>Edytuj</small></a></td></tr>""".format(room.id, room.name, room.id )
+    res += "</table><br>"
+    res += """<a href='/room/new'>Dodaj salę</a>
+              <a href='/search/'>Wyszukaj salę</a>"""
     return res
 
 
@@ -70,7 +71,34 @@ def edit_room(request, id):
 
 @csrf_exempt
 def add_room(request):
-    pass
+    response = HttpResponse()
+    if request.method == 'GET':
+        form = """<html><body><form action='#' method='POST'>"""
+        form += """<label> Nazwa sali:<br>
+                           <input type='text' name='room_name'>
+                           </label><br><br>"""
+        form += """<label> Pojemność:<br>
+                           <input type='number' name='capacity'>
+                           </label><br><br>"""
+        form += """<label> Projektor:<br>
+                           <input type='checkbox' name='projector' value='projector'>
+                           </label><br><br>"""
+        form += "<input type='submit' value='wyślij'>"
+        form += "</form>"
+        response.write(form)
+    else:
+        name = request.POST.get('room_name')
+        capacity = request.POST.get('capacity')
+        projector = request.POST.get('projector')
+        if projector is not None:
+            projector = True
+        else:
+            projector = False
+        Room.objects.create(name=name, capacity=capacity, projector=projector)
+        response.write("Dodano salę")
+
+    return response
+
 
 @csrf_exempt
 def search_room(request):
@@ -86,3 +114,5 @@ def delete_room(request, id):
 
 
 
+def delete_room(request):
+    pass

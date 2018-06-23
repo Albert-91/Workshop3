@@ -14,9 +14,7 @@ def decor_warp_html(form):
         html = """
             <html>
                 <body>
-                    <table border=1>
-                        {}
-                    </table>
+                    {}
                 </body>
             </html>""".format(form(*args, **kwargs))
         return HttpResponse(html)
@@ -30,23 +28,114 @@ def show_rooms(request):
     res = ""
     for room in rooms:
         res += """<tr><td><a href='/room/{}'>{}</a></td></tr>""".format(room.id, room.name)
+    res = "<table border=1px>"
+    for room in rooms:
+        res += """<tr><td><a href='/room/{}'>{}</a> <a href='/room/modify/{}' style='color: red;'>
+                        <small>Edytuj</small></a><br>
+                        <a href='/room/delete/{}' style='color: black;'>Usuń</a></td></tr></form>""".format(room.id,
+                                                                                                            room.name,
+                                                                                                            room.id,
+                                                                                                            room.id)
+    res += "</table><br>"
+    res += """<a href='/room/new'>Dodaj salę</a>
+              <a href='/search/'>Wyszukaj salę</a>"""
     return res
 
 
 @csrf_exempt
 def details_room(request, id):
-    pass
+    room = Room.objects.get(id=id)
 
+    answer = """
+            <div align="center">
+                    <h1>Nazwa sali: {}</h1><br>
+                    <h3>Pojemność: {}</h3><br>
+            """.format(room.name, room.capacity)
+    if room.projector:
+        answer += "<h3>Posiada rzutnik</h3><br>"
+    else:
+        answer += "<h3>Nie posiada rzutnika</h3><br>"
+    answer += """
+            </div>
+            <div align="center">
+            """
+    try:
+        reserved = Reservation.objects.get(room_id=id)
+        answer += "Sala zarezerwowana na dni:<br>"
+        for res in reserved:
+            answer += "<ul><li>{}</li></ul><br>".format(res.date)
+    except Reservation.DoesNotExist:
+        answer += "Brak rezerwacji"
+    answer += "</div>"
+    return HttpResponse(answer)
 
 
 
 @csrf_exempt
-def edit_room(request):
-    pass
+def edit_room(request, id):
+    room = Room.objects.get(id=id)
+    response = HttpResponse()
+    if request.method == 'GET':
+        form = """<html><body><form action='#' method='POST'>"""
+        form += """Zmień dane sali {} <br><br>""".format(room.name)
+        form += """<label> Nazwa sali:<br>
+                               <input type='text' name='room_name'>
+                               </label><br><br>"""
+        form += """<label> Pojemność:<br>
+                               <input type='number' name='capacity'>
+                               </label><br><br>"""
+        form += """<label> Projektor:<br>
+                               <input type='checkbox' name='projector' value='projector'>
+                               </label><br><br>"""
+        form += "<input type='submit' value='wyślij'>"
+        form += "</form>"
+        response.write(form)
+    else:
+        name = request.POST.get('room_name')
+        capacity = request.POST.get('capacity')
+        projector = request.POST.get('projector')
+        if projector is not None:
+            projector = True
+        else:
+            projector = False
+        room.name = name
+        room.capacity = capacity
+        room.projector = projector
+        room.save()
+        response.write("Zmieniono dane sali {}".format(room.name))
+
+    return response
 
 @csrf_exempt
 def add_room(request):
-    pass
+    response = HttpResponse()
+    if request.method == 'GET':
+        form = """<html><body><form action='#' method='POST'>"""
+        form += """<label> Nazwa sali:<br>
+                           <input type='text' name='room_name'>
+                           </label><br><br>"""
+        form += """<label> Pojemność:<br>
+                           <input type='number' name='capacity'>
+                           </label><br><br>"""
+        form += """<label> Projektor:<br>
+                           <input type='checkbox' name='projector' value='projector'>
+                           </label><br><br>"""
+        form += "<input type='submit' value='wyślij'>"
+        form += "</form>"
+        response.write(form)
+    else:
+        name = request.POST.get('room_name')
+        capacity = request.POST.get('capacity')
+        projector = request.POST.get('projector')
+        if projector is not None:
+            projector = True
+        else:
+            projector = False
+        Room.objects.create(name=name, capacity=capacity, projector=projector)
+        response.write("Dodano salę")
+
+    return response
+
 
 
 @csrf_exempt
@@ -100,8 +189,9 @@ def search_room(request):
 
 
 @csrf_exempt
-def delete_room(request):
-    pass
-
-
+def delete_room(request, id):
+    room = Room.objects.get(id=id)
+    room.delete()
+    answer = "Sala {} usunięta".format(room.name)
+    return HttpResponse(answer)
 

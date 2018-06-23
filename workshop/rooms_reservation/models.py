@@ -12,4 +12,4 @@ class Room(models.Model):
 class Reservation(models.Model):
     date = models.DateField()
     comment = models.CharField(max_length=64)
-    room_id = models.ForeignKey(Room)
+    room_id = models.ForeignKey(Room, on_delete=models.CASCADE)

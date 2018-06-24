@@ -166,6 +166,7 @@ def search_room(request):
                 <br><br>
                 <input type="submit" value="Szukaj">
             </form>
+            
             """
     if request.method == 'GET':
         return form
@@ -176,16 +177,26 @@ def search_room(request):
         capacity = int(request.POST.get("capacity"))
         projector = bool(request.POST.get("projector"))
         date = datetime(year=my_year, month=my_month, day=my_day)
-        rooms_list = []
-        for room in rooms:
-            if room.projector == projector and room.capacity >= capacity:
-                rooms_list.append(room)
-            for good_room in rooms_list:
-                if good_room.date == date:
-                    rooms_list.pop(good_room)
-        return rooms_list
-
-
+        reservations = Reservation.objects.filter(date=date)
+        dates_list = []
+        for i in reservations:
+            dates_list.append(i.room_id)
+        my_rooms = Room.objects.filter(projector=projector).filter(capacity__gte=capacity).exclude(id__in=dates_list)
+        rooms_string = """
+            <table border=1>
+                <tr>
+                    <td>Nazwa pokoju</td>
+                    <td>Pojemność sali</td>
+                </tr>
+            """
+        for i in my_rooms:
+            rooms_string += """
+                <tr>
+                    <td>{}</td>
+                    <td>{} osób</td>
+                </tr>""".format(i.name, i.capacity)
+        rooms_string += "</table>"
+        return rooms_string
 
 
 @csrf_exempt
